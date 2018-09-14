@@ -1,0 +1,112 @@
+
+{# 继承 的基类文件 #}
+{% extends "base.html" %}
+<meta charset="utf-8">
+
+{# 页面标题 #}
+{% block title %}
+    {{ blog.title }}
+{% endblock %}
+
+
+{% load staticfiles %}
+<!-- css拓展，就是因为静态文件 -->
+<!-- 这个css文件放的位置注意：这个css是对应这个app定制的所以要 专门在这个app下创建一个文件夹 -->
+{% block css %}
+    <link rel="stylesheet" type="text/css" href="{% static 'blog/blog.css'%}"> 
+{% endblock %}
+
+
+{# 页面内容 #}
+{% block content %}
+    <!-- 页面内容布局， 这是个容器，然后分成10列  然后向右偏移1-->
+    <div class="container">
+        <div class="row">
+            <div class="col-xs-10 col-xs-offset-1">
+                <h3>{{ blog.title }}</h3>
+                <ul class="blog-info-descripe">
+                    <li>作者:  {{ blog.author }}</li>
+                    <li>发表日期:  {{ blog.created_time | date:"Y-m-d G:n:s" }}</li>
+                    <li>分类:                     
+                        <a href="{% url 'blogs_with_type' blog.blog_type.pk %}">
+                        {{ blog.blog_type }}
+                        </a>
+                    </li>  
+                    <li>
+                        阅读量: {{blog.get_read_num }}
+                    </li>              
+                </ul>
+                <!-- 加个div设置css 格式为第一个行缩进 -->
+                <div class="blog-content">{{ blog.content|safe }}</div>   
+                <div class="more-blog">
+                    <!-- 注意第三个参数 --> 
+                    <li>
+                        上一篇:
+                        {% if previous_blog %}
+                          <a href="{% url 'blog_detail' previous_blog.pk %}">
+                                {{previous_blog.title}}
+                          </a>
+                        {% else %}
+                            没有上一篇了
+                        {% endif %}
+                    </li>
+
+                     <li>
+                        下一篇: 
+                        {% if next_blog %}
+                            <a href="{% url 'blog_detail' next_blog.pk %}">{{next_blog.title}}</a>
+                        {% else %}
+                            没有下一篇了
+
+                        {% endif %}    
+                        
+                    </li> 
+                </div>   
+            </div>
+        </div>
+
+        <div class="row">
+            <div class="col-xs-10 col-xs-offset-1">
+                <div class="comment-area">
+                   <h3 class="comment-area-title">提交评论</h3> 
+                    {% if user.is_authenticated %}
+                        <form action="{% url 'update_comment'%}" method="POST">
+                            {% csrf_token %}
+                            {{content_form}}
+                            <div class="form-group">
+                                <label id="comment_text" >{{user.username}}欢迎, 请评论!</label>
+                            </div>
+                            <textarea id = "comment_text" class="form-control" name="text" rows="4"></textarea>
+                            <!-- 这里第参考 评论的models中, ..id是评论的文章的id, content_type是文章类型, -->
+                            <input type="hidden" name="object_id" value="{{ blog.pk }}">
+                            <input type="hidden" name="content_type" value="blog">
+                            <input type="submit" name="评论" class="btn" btn-primary style="float: right;">
+                        </form>
+                    {% else %}
+                        未登录, 登录后方可评论
+                        <a href="{% url 'login_m' %}?from={{request.get_full_path}}">登录</a>
+                        <span>or</span>
+                        <a href="{% url 'register' %}?from={{request.get_full_path}}">注册</a>
+                        
+                        
+                    {% endif %}
+                </div>
+                <div class="comment-area">
+                    <h3 class="comment-area-title">评论列表</h3> 
+                    {% for comment in comments %}
+                        <div>
+                            {{ comment.comment_people.username }}
+                            ({{ comment.comment_time | date:"Y-m-d G:n:s"}}):
+                            {{ comment.text }}          
+                        </div>
+                    {% empty %}
+                        暂无评论
+                    {% endfor %}
+                </div>
+                
+            </div>
+        </div>
+    </div>
+        <!-- <p>{{next_blog}}</p> -->
+        <!-- <a href="">上一篇文章</a> -->
+{% endblock %}

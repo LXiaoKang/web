@@ -1,0 +1,68 @@
+{% extends 'base.html' %}
+<!-- 注意 上面的继承要放在第一行 -->
+<meta charset="utf-8">
+{% load staticfiles %}
+
+<!-- 博客首页 -->
+{% block title %}
+    我的博客首页 | 登录
+{% endblock %}
+
+<!-- 设置动作 -->
+{% block nav_home_active %} active {% endblock %}
+
+<!-- 文章内容块 -->
+{% block content %}
+<!-- 登录的 一块, 是一个容器布局 -->
+    <div class="container" style="margin: 120px 0">
+        <div class="row">
+            <div class="col-sm-6 col-sm-offset-4">
+                <!-- 带标题的面板 , bootsrap中组件搜索panel-->
+                <div class="panel panel-default">
+                  <div class="panel-heading">
+                    <h3 class="panel-title">登录</h3>
+                  </div>
+                  <div class="panel-body">
+                    <form action="" method="POST">
+                        {% csrf_token %}
+                        <!-- {{login_form}} -->
+                        {% for field in login_form %}
+                            <label for=”{{field.id_for_lable}}>{{field.lable}}</label>
+                            {{field}}
+                            <p class=”text-danger”>{{field.errors.as_text}}</p>
+                        {%endfor%}
+                            <span class=”pull_left text-danger”>{{login_form_non_field_errors}}</span>
+                        <input type="submit" value="登录" class="btn btn-primary pull-right" >
+                    </form>
+                  </div>
+                </div>
+            </div>
+        </div>
+    </div>
+
+<!--     {{message}}
+<a href="{{redirect_to}}">返回</a> -->
+{% endblock %}
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+

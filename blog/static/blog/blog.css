@@ -1,0 +1,68 @@
+ui.blog_type {
+    list-style-type: none;
+}
+
+/*这个放在这里的原因是：这个css是对应这个app定制的所以要 专门在这个app下创建一个文件夹*/
+
+/*调博客内容的页面*/
+
+
+/*设置下划线，并且最后一个没有*/
+div.blog:not(last-child){
+     margin-bottom: 2em; 
+     padding-bottom: 1em;
+     border-bottom: 1px solid #eee;
+}
+
+div.blog h3{
+    margin-top: 0.5em
+}
+
+/*设置 分类的标签和时间的标签 和下面的文章的距离*/
+div.blog p.blog_info {
+    margin-bottom: 0;
+}
+
+
+
+/*显示博客内容页面的css 是显示博客的信息的描述，如作者，发表日期*/
+/*这一个是去掉列表的点的*/
+ul.blog-info-descripe {
+    list-style-type: none;
+    /*下边距*/
+    margin-bottom: 2em;
+
+}
+/*这一个是让他们显示在一行*/
+ul.blog-info-descripe li{
+    display: inline-block;
+    margin-bottom: 2em;
+}
+
+/* 文章内容 缩进*/
+div.blog-content {
+    text-indent: 2em;
+}
+
+/*文本居中*/
+div.paginator {
+    text-align: center;
+}
+
+/*上一篇,或下一篇,的上边距*/
+div.more-blog {
+    margin-top: 2em;
+}
+
+
+/*提交评论*/
+div.comment-area {
+    margin-top: 2em;
+}
+/*添加下划线*/
+h3.comment-area-title {
+    border-bottom:1px solid #ccc;
+    padding-bottom: 0.5em;
+    margin-top: 2em;
+    /*margin-bottom:  2em;*/
+}

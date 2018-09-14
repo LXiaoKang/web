@@ -1,0 +1,19 @@
+{% extends 'base.html' %}
+<meta charset="utf-8">
+<!-- 注意 上面的继承要放在第一行 -->
+
+{% load staticfiles %}
+
+<!-- 博客首页 -->
+{% block title %}
+    我的博客首页
+{% endblock %}
+
+<!-- 设置动作 -->
+{% block nav_home_active %} active {% endblock %}
+
+<!-- 文章内容块 -->
+{% block content %}
+    {{message}}
+<a href="{{ redirect_to }}">返回</a>
+{% endblock %}

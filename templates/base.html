@@ -1,0 +1,88 @@
+<!-- 加载路径 -->
+{% load staticfiles %}
+<!DOCTYPE html>
+<html lang="zh-CN">
+<head>
+    <meta charset="utf-8">
+    <meta http-equiv="X-UA-Compatible" content="IE=edge">
+    <meta name="viewport" content="width=device-width, initial-scale=1">
+    <!-- 第二条是 浏览器设置 第三条是响应式,自动适应屏幕 -->
+    <!-- 上述3个meta标签*必须*放在最前面，任何其他内容都*必须*跟随其后！ -->
+
+    <script type="text/javascript" src="{% static 'jquery.min1.12.4.js'%}"></script>
+    <title>{% block title %} {% endblock %}</title>
+
+    <!-- 设置 css路径， -->
+    <link rel="stylesheet" type="text/css" href="{% static 'base.css' %}">
+    <!-- 设置以后继承的css的块 -->
+    {% block css %} {% endblock %}
+
+    <!-- 引用css文件 -->
+    <link rel="stylesheet" type="text/css" href="{% static 'bootstrap-3.37/css/bootstrap.min.css'%}">
+</head>
+<body style="background-color: #fff2ea">
+    <!-- 导航条 -->
+    <!-- {# nav 是导航栏的缩写， 这里的是css#} -->
+    <div class="navbar navbar-inverse" role="navigation">
+        <div class="container">
+            <div class="navbar-header">
+                <a class="navbar-brand"  href="{% url 'home' %}">
+                   个人博客网站
+                </a>
+                <button class="navbar-toggle collapsed" data-toggle="collapse"
+                data-target="#navbar-collapse">
+                    <span class="icon-bar"></span>
+                    <span class="icon-bar"></span>
+                    <span class="icon-bar"></span>
+                </button>
+            </div>
+            <div id="navbar-collapse" class="collapse navbar-collapse">
+                <ul class="nav navbar-nav">
+                    <li class = "{% block nav_home_active %} {% endblock %}">
+                         <a href="{% url 'home' %}">首页</a>
+                    </li>
+                    <li class = "{% block nav_blog_list_active %} {% endblock %}">
+                        <a href="{% url 'blog_list' %}">博客</a>
+                    </li>
+                    <li>
+                        <a href="/admin" target="_blank">后台管理</a>
+                    </li>
+                </ul>
+            </div>
+        </div>  
+    </div>
+
+
+<!--     <div class = "nav">
+        <a class = "logo" href="{% url 'home' %}">
+            <h3>个人博客网站</h3>
+        </a>
+        <a href = "{% url 'home' %}"> 首页 </a>
+        <a href = "{% url 'blog_list'%}"> 博客</a>
+    </div> -->
+
+    <hr>
+    {% block content %} {% endblock %}
+
+
+    <!-- 引用js文件  js文件最好放在下面,因为加载的慢   注意这里是src--> 
+
+    <!-- 这个放在 下面 -->
+    <script type="text/javascript" src="{% static 'bootstrap-3.37/js/bootstrap.min.js'%}">
+        
+    </script>
+    <footer class="bs-docs-footer">
+      <div class="container">
+        <ul class="bs-docs-footer-links">
+          <li><a href="https://blog.csdn.net/qq_38504396">My csdn</a></li>
+          <li><a href="https://www.cnblogs.com/xiaokang01"> My cnblogs</a></li>
+        </ul>
+          <p>联系方式 1760090307@qq.com </p>
+        <p>博客还未上线，敬请期待!!!</p>
+          <p>刘康</p>
+
+      </div>
+    </footer>
+
+</body>
+</html>

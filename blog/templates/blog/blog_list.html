@@ -1,0 +1,172 @@
+{% extends "base.html" %}
+
+<!-- 引入文件的标签 -->
+{% load staticfiles %}
+
+
+
+<!-- css拓展，就是因为静态文件 -->
+<!-- 这个css文件放的位置注意：这个css是对应这个app定制的所以要 专门在这个app下创建一个文件夹 -->
+{% block css %}
+    <link rel="stylesheet" type="text/css" href="{% static 'blog/blog.css'%}"> 
+{% endblock %}
+<!-- 设置动作 -->
+{% block nav_blog_list_active %} active {% endblock %}
+
+{# 页面标题 #}
+{% block title %}
+    我的网站
+{% endblock  %}
+
+{# 页面内容 #}
+{% block content %}
+<!-- 这里的html是一个 框框， 珊格 -->
+    <div class="container">
+        <div class="row">
+            <!-- 这是调珊格大小 -->
+            <div class="col-sm- 8 col-md-8  col-lg-10">
+                <div class="panel panel-default">
+                    <div class="panel-heading"> 博客列表
+                        <!-- 这里有个块，作为博客分类 查看的页面的调用 -->
+                        {% block blog_list_title %}
+                        {% endblock %}
+                    </div>
+                        <div class="panel-body">
+                            {% for blog in blogs %}
+                                <div class="blog">
+                                    <!-- url 的参数,blog_detail是urls中的别名, 后面的是点pk,与urls的path  -->
+                                    <!-- 将views中的pk参数,传给urls中的前面的参数 -->
+                                    <a href="{% url 'blog_detail' blog.pk %}">
+                                        <h3>{{ blog.title  }}</h3>
+                                    </a>
+                                    <ul>
+                                        <!-- 下面是分类和时间的图标 -->
+                                        <p class="blgo_info">
+                                            <span class="glyphicon glyphicon-tags" aria-hidden="true">
+                                            </span>
+                                        <a href="{% url 'blogs_with_type' blog.blog_type.pk%}">{{blog.blog_type.type_name}}&nbsp;
+                                        </a>
+                                            <span class="glyphicon glyphicon-time" aria-hidden="true">
+                                            </span>
+                                            {{blog.created_time|date:"Y-m-d" }}&nbsp;&nbsp;
+                                            阅读({{ blog.get_read_num }})                             
+                                        </p>
+
+                                    </ul>
+                                    <p>{{ blog.content | striptags| truncatechars:100 }}</p>                                    
+                                </div>
+                            {% empty %}
+                                <div class="blog">
+                                    <h3>-- 还没有写博客, 敬请期待！--</h3>
+                                </div>
+                            {% endfor %}                          
+                        </div>
+                </div>
+
+                <!-- 显示 所有的页数 -->
+                <div class="paginator">
+                  <ul class="pagination">
+                    <!-- 上一页 -->
+                    <li>
+                        {% if page_of_blogs.has_previous %}
+                            <!-- 链接到上一页， 函数是返回上一页的页码 -->
+                            <a href="?page={{page_of_blogs.previous_page_number}}" aria-label="Previous">
+                                <span aria-hidden="true">&laquo;</span>
+                            </a>
+                        {% else %}
+                                <!-- 不能点 -->
+                                <span aria-hidden="true">&laquo;</span>
+                        {% endif %}
+
+                        <!-- 全部页码 -->
+                        <!-- 如果是当前页，当前页就不能点，而且...不能点 -->
+                    </li>
+                        {%  for page_num in page_range %}
+                            {% if page_num == page_of_blogs.number %}
+                                <!-- 这里的链接 是对应发的前面views中的GET请求 -->
+                                <li class="active"><span>{{page_num}}</span></li>
+                            {% else %} 
+                                {% if page_num == '...' %}
+                                    <li><span>{{page_num}}</span></li>
+                                {% else %}
+                                    <li><a href="?page={{ page_num }}">{{page_num}}</a></li>
+                                {% endif %}                 
+                            {% endif%}
+                        {% endfor %}
+                    <li>
+                        <!-- 下一页  -->
+                        {% if page_of_blogs.has_next %}
+                           <a href="?page={{page_of_blogs.next_page_number}}" aria-label="Next">
+                            <span aria-hidden="true">&raquo;</span>
+                          </a>                       
+                        {% else %}
+                            <span aria-hidden="true">&raquo;</span>
+                        {% endif %}
+
+                    </li>
+                  </ul>
+                    <p></p>
+                    <!-- 添加过滤器,统计有多少篇博客。 -->
+                    <!-- (一共有{{ blogs | length}}篇博客) -->
+                    <p>
+                        当前为{{page_of_blogs.number}}页
+                        共有{{page_of_blogs.paginator.num_pages}}页
+                        共有{{ page_of_blogs.paginator.count}}篇博客
+                    </p>
+                </div>
+            </div>
+            <div class="hidden-xs col-sm-4 col-md-4  col-lg-2">
+                <!-- 这里加了个面板 -->
+                <div class="panel panel-default">
+                    <div class="panel-heading">博客分类</div>
+                        <div class="panel-body">
+                            {% for blog_type in blog_types %}
+                                <ul class="blog_tpe_css">
+                                    <!-- 这里出过一次错 是因为写的是blog.blog_type.pk -->
+                                    <a href="{% url 'blogs_with_type' blog_type.pk %}">
+                                        {{blog_type.type_name}}
+                                        ({{blog_type.blog_count}})
+
+                                    </a>
+
+                                </ul>
+                            {% empty %}
+                                <p>--还没有分类，敬请期待--</p>
+                            {% endfor %}  
+                            <a href="#top" target="_self">返回顶部00</a>                          
+                    </div>
+                </div>
+                <!-- 添加时间面板 -->
+                <div class="panel panel-default">
+                    <div class="panel-heading">按照时间分类</div>
+                    <div class="panel-body">
+                        <ul>
+                            {% for blog_date, blog_count in blog_dates.items %}
+                                <li>
+                                    <a href="{% url 'blogs_with_date' blog_date.year blog_date.month %}">
+                                        {{blog_date | date:"Y年-m月"}}
+                                        ({{blog_count}})
+                                    </a>
+                                </li>
+                            {% endfor %}
+                        </ul>
+                    </div>
+                    
+                </div>
+            </div>
+        </div>
+    </div>
+
+
+
+    <!-- 返回最顶部 -->
+    <a id="myTop" href="javascript:scroll(0,0)" style="position:fixed;left:1400px;bottom:0;display:block;">
+        <span class="glyphicon glyphicon-menu-up" aria-hidden="true"></span>
+    </a>
+
+    <!-- 返回最底部 -->
+    <a id="myTop" href="javascript:scroll(1000,1000)" style="position:fixed;left:1400px;top:100px;display:block;">
+        <span class="glyphicon glyphicon-menu-down" aria-hidden="true"></span>
+    </a>
+
+{% endblock %}
